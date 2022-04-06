@@ -1,0 +1,81 @@
+pipeline {
+    agent any
+    environment {
+        name = 'gaurav'
+    }
+    parameters {
+        string(name: 'person', defaultValue: 'Saurav Sharma', description: "Who are you?")
+        booleanParam(name: 'isMale', defaultValue: true, description: "")
+        choice(name: 'City', choices: ['Jaipur','Mumbai','Pune' ], description: "")
+    }
+    stages {
+        stage('Run A command') {
+            post {
+                 always{
+                    office365ConnectorSend webhookUrl: 'https://addverbtech.webhook.office.com/webhookb2/33ae7b0a-c20f-4363-a6f8-8952358cc6e4@9d0bf1ed-9dbb-4ad2-b95e-efaf17869937/JenkinsCI/8e7d02720bce4332bf49ef8648ffb5b6/3a5eb524-abd3-43bb-a0c1-a3835acd860d',
+                    message: 'Application has been [Started](https://uat.blue.biz)',
+                    status: 'Started',
+                    color: '#0000FF'
+        }
+            }
+            steps {
+                sh '''
+                ls
+                date
+                pwd
+                cal 2021
+                '''
+                
+            }
+        }
+        stage('Environment Variables') {
+            environment {
+                username = 'myusername'
+            }
+                
+            
+            steps {
+                sh 'echo  "${BUILD_ID}"'
+                sh 'echo  "${name}"'
+                sh 'echo  "${username}"'
+            }
+        }
+        stage('Parameters') {
+            steps {
+                echo 'deploy on test'
+                sh 'echo "${name}"'
+                sh 'echo  "${person}"'
+            }
+        }
+        stage('Continue ?') {
+            input {
+                message "Should we continue?"
+                ok "Yes we Should"
+            }
+            
+            steps {
+                echo 'deploy on prod'
+            }
+        }
+        stage('Deploy on prod') {
+            steps {
+                echo 'deploy on prod'
+            }
+        }
+    }
+    post{
+        
+        failure{
+           office365ConnectorSend webhookUrl: 'https://addverbtech.webhook.office.com/webhookb2/33ae7b0a-c20f-4363-a6f8-8952358cc6e4@9d0bf1ed-9dbb-4ad2-b95e-efaf17869937/JenkinsCI/8e7d02720bce4332bf49ef8648ffb5b6/3a5eb524-abd3-43bb-a0c1-a3835acd860d',
+            message: 'Application has been [Failed](https://uat.red.biz)',
+            status: 'Failure',
+            color: '#FF0000'
+        }
+        success{
+           office365ConnectorSend webhookUrl: 'https://addverbtech.webhook.office.com/webhookb2/33ae7b0a-c20f-4363-a6f8-8952358cc6e4@9d0bf1ed-9dbb-4ad2-b95e-efaf17869937/JenkinsCI/8e7d02720bce4332bf49ef8648ffb5b6/3a5eb524-abd3-43bb-a0c1-a3835acd860d',
+            message: 'Application has been [success](https://uat.green.biz)',
+            status: 'Success',
+            color: '#008000'
+        }
+    }
+}
