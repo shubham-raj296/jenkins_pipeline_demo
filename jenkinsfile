@@ -28,18 +28,7 @@ pipeline {
                 
             }
         }
-        stage('Environment Variables') {
-            environment {
-                username = 'myusername'
-            }
-                
-            
-            steps {
-                sh 'echo  "${BUILD_ID}"'
-                sh 'echo  "${name}"'
-                sh 'echo  "${username}"'
-            }
-        }
+        
         stage('Parameters') {
             steps {
                 echo 'deploy on test'
