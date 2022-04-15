@@ -16,7 +16,7 @@ pipeline {
                     message: 'Application has been [Started](https://uat.blue.biz)',
                     status: 'Started',
                     color: '#0000FF'
-        }
+                }
             }
             steps {
                 sh '''
@@ -26,6 +26,18 @@ pipeline {
                 cal 2021
                 '''
                 
+            }
+        }
+        stage('Environment Variables') {
+            environment {
+                username = 'myusername'
+            }
+                
+            
+            steps {
+                sh 'echo  "${BUILD_ID}"'
+                sh 'echo  "${name}"'
+                sh 'echo  "${username}"'
             }
         }
         
